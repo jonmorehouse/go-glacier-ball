@@ -1,0 +1,6 @@
+src/
+pkg/
+.goenv
+test.txt
+
+
