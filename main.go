@@ -1,24 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	//"log"
-	"io/ioutil"
+	"bufio"
+	"log"
 )
 
 func main() {
 
-	bytes, err := ioutil.ReadAll(os.Stdin)
-	
-	//log.Println(err, string(bytes))
-	if err != nil {
+	reader := bufio.NewReader(os.Stdin)
 
-		fmt.Println(err)
+	for {
 
+		line, err := reader.ReadString('\n')
+		
+		if err != nil {
+
+			break
+
+		}
+
+		log.Println(line)
 	}
-
-	fmt.Println(string(bytes))
+	
 }
 
 
