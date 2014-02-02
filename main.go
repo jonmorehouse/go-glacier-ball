@@ -2,27 +2,23 @@ package main
 
 import (
 	"fmt"
-	"labix.org/v2/pipe"
+	"os"
+	//"log"
+	"io/ioutil"
 )
 
 func main() {
 
-	p := pipe.Line(
+	bytes, err := ioutil.ReadAll(os.Stdin)
 	
-		pipe.ReadFile("test.txt"),
-		pipe.Exec("lpr"),
-
-	)
-
-	output, err := pipe.CombinedOutput(p)
-
+	//log.Println(err, string(bytes))
 	if err != nil {
 
-		fmt.Printf("%v\n", err)
+		fmt.Println(err)
 
 	}
 
-	fmt.Printf("%s", output)
+	fmt.Println(string(bytes))
 }
 
 
