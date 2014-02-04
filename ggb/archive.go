@@ -1,4 +1,4 @@
-package archive
+package ggb
 
 // archive is a single tarball archive
 // can flag 

@@ -1,15 +1,17 @@
-package file
+package ggb
 
 import (
 	
-	"launchpad.net/gocheck"
 	"testing"
 	"fmt"
 )
 
 func TestFile(*testing.T) {
+	
+	// allocate structure for current file
+	
 
-	fmt.Println("test test")
+
 
 }
 

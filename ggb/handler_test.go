@@ -1,4 +1,4 @@
-package handler
+package ggb
 
 import (
 
@@ -12,8 +12,6 @@ func Test(t *testing.T) { TestingT(t) }
 // now set up the test suite as needed
 type HandlerTestSuite struct{}
 var _ = Suite(&HandlerTestSuite{})
-
-// now lets go ahead and get a basic test up and running
 
 
 

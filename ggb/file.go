@@ -1,4 +1,4 @@
-package file
+package ggb
 
 type File struct {
 

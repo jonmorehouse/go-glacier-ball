@@ -1,4 +1,4 @@
-rackage main
+package ggb
 
 import (
 	"os"

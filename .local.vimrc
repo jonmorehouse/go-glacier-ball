@@ -1,4 +1,12 @@
-fu! GoTest()
+fu! GoTestPackage()
+
+	let command = "go test ."
+
+	call CleanShell(command)
+
+endfunction
+
+fu! GoTestFile()
 	
 	if @% !~ ".go"
 
@@ -21,5 +29,7 @@ fu! GoTest()
 
 endfunction
 
-map <Leader>rr :call GoTest()<CR>
+map <Leader>rr :call GoTestFile()<CR>
+map <Leader>r :call GoTestPackage()<CR>
+
 
