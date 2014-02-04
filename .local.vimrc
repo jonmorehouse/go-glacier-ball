@@ -14,7 +14,7 @@ fu! GoTest()
 	endif
 
 	" now run go tests
-	let command = "go test " . file
+	let command = "go test -v " . file
 
 	" now run this command
 	call CleanShell(command)

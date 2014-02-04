@@ -4,8 +4,6 @@ import (
 
 	. "launchpad.net/gocheck"
 	"testing"
-	"./file"
-
 )
 
 // link gocheck into the go test runner
