@@ -6,12 +6,21 @@ import (
 	"fmt"
 )
 
-func TestFile(*testing.T) {
+func TestFileStruct(*testing.T) {
 	
 	// allocate structure for current file
-	
+		
+	fmt.Println("TEST")
+}
+
+func TestFileSize(*testing.T) {
 
 
 
 }
+
+
+
+
+
 

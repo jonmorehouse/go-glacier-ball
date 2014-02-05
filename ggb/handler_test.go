@@ -3,20 +3,13 @@ package ggb
 import (
 
 	. "launchpad.net/gocheck"
-	"testing"
+	"fmt"
 )
 
-// link gocheck into the go test runner
-func Test(t *testing.T) { TestingT(t) }
+func (s * GGBSuite) TestTest(c *C) {
 
-// now set up the test suite as needed
-type HandlerTestSuite struct{}
-var _ = Suite(&HandlerTestSuite{})
-
-
-
-
-
-
+	fmt.Println("TEST")
+	c.Check(42, Equals, 40)
+}
 
 
