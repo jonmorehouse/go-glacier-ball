@@ -3,7 +3,6 @@ package ggb
 import (
 	
 	. "launchpad.net/gocheck"
-	"testing"
 	"code.google.com/p/go-uuid/uuid"
 	"math/rand"
 )
@@ -15,15 +14,6 @@ type FileSuite struct {
 	size int64 // size in bytes
 	large bool // whether or not the file should be flagged as large
 }
-
-// bootstrap file tests to use this suite as needed
-func TestFiles(t * testing.T) {
-
-	TestingT(t)
-}
-
-// now create the suite object
-var _ = Suite(&FileSuite{})
 
 // lets set up the file suite as needed
 func (s * FileSuite) SetUpSuite(c *C) {

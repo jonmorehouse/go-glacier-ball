@@ -1,12 +1,10 @@
 package ggb
 
 import (
-
 	"math/rand"
 	. "launchpad.net/gocheck"
 	"os"
 	"time"
-
 )
 
 // generate teh test suite
@@ -17,16 +15,16 @@ type GGBSuite struct {
 }
 
 // now we can have the ggb suit as our global suite
-var _ = Suite(&GGBSuite{})
+//var _ = Suite(&GGBSuite{})
 
 func (s * GGBSuite) SetUpSuite(c *C) {
 
 	// seed the random generator
 	rand.Seed(time.Now().UTC().UnixNano())
-
 }
 
 func (s * GGBSuite) TearDownSuite(c *C) {
+
 
 }
 

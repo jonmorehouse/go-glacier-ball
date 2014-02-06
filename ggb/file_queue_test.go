@@ -2,14 +2,19 @@ package ggb
 
 import (
 
+	"container/list"
 	"code.google.com/p/go-uuid/uuid"
 	"testing"
-	"fmt"
 	. "launchpad.net/gocheck"
+	"fmt"
+	"sync"
 )
 
+// bootstrap the suite into the current environment
+var _ = Suite(&FileQueueSuite{})
+
 // bootstrap gocheck into current test environment
-func TestFileQueue(t * testing.T) {
+func Test(t * testing.T) {
 
 	TestingT(t)
 }
@@ -17,45 +22,68 @@ func TestFileQueue(t * testing.T) {
 // now lets create a few different files 
 type FileQueueSuite struct {
 
-	files[]* File
+	files list.List
 }
-
-// bootstrap the suite into the current environment
-var _ = Suite(&FileQueueSuite{})
 
 func (s * FileQueueSuite) SetUpSuite(c *C) {
 
 	multiple := 256 * 1024 // kilobytes
+	var wg sync.WaitGroup
 
 	// create a list of files
-	for i := 0; i < 5; i++ {
+	for i := 1; i <= 5; i++ {
 
-		// create a file of
-		path := uuid.New() + ".txt"
+		wg.Add(1)
 
-		// initialize size of this file
-		size := int64(multiple * i)
+		go func (wg * sync.WaitGroup) {
 
-		// create the sample file as needed
-		err := CreateFile(path, size)
+			// create a file of
+			path := "/tmp/go/" + uuid.New() + ".txt"
 
-		fmt.Println(err)
+			// initialize size of this file
+			size := int64(multiple * i)
 
-		// make sure no error created with files
-		//c.Assert(err, Equals, IsNil)
+			// create the sample file as needed
+			err := CreateFile(path, size)
 
-		// now that our file is created, createa  File struct to contain it
-		// we're storing pointers to these 
-		fmt.Println(size)
+			// make sure no error created with files
+			c.Assert(err, IsNil)
+
+			// now that our file is created, createa  File struct to contain it
+			// we're storing pointers to these 
+			file,err := NewFile(path)
+
+			c.Assert(err, IsNil)
+
+			s.files.PushBack(&file)
+
+			wg.Done()
+
+		}(&wg)
+	}
+
+	//wg.Wait()
+
+			
+}
+
+func (s * FileQueueSuite) TearDownSuite(c *C) {
+
+	// remove all file objects as needed
+	for e := s.files.Front(); e != nil; e = e.Next() {
+
+		s.files.Remove(e)
 
 	}
 }
 
 func (s *FileQueueSuite) TestFileQueue(c *C) {
 
+	fmt.Println("HELLO")
+	for e := s.files.Front(); e != nil; e = e.Next() {
 
 
-
+	}
 }
 
 

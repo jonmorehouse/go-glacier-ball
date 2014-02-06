@@ -12,7 +12,9 @@ Example
 -------
 
 ```
+
   find . -type f | glaciar-ball
+
 ```
 
 Output
