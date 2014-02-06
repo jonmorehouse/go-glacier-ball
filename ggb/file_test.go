@@ -3,7 +3,6 @@ package ggb
 import (
 	
 	. "launchpad.net/gocheck"
-	"time"
 	"testing"
 	"code.google.com/p/go-uuid/uuid"
 	"math/rand"
@@ -12,7 +11,6 @@ import (
 // create a custom suite for this element here
 type FileSuite struct {
 
-	parent * GGBSuite
 	path string	
 	size int64 // size in bytes
 	large bool // whether or not the file should be flagged as large
@@ -29,9 +27,6 @@ var _ = Suite(&FileSuite{})
 
 // lets set up the file suite as needed
 func (s * FileSuite) SetUpSuite(c *C) {
-
-	// seed the random generator
-	rand.Seed(time.Now().UTC().UnixNano())
 
 	var maxSize int64
 	maxSize = 512 // maximum number of bytes
@@ -61,7 +56,6 @@ func (s * FileSuite) SetUpSuite(c *C) {
 func (s * FileSuite) TearDownSuite(c *C) {
 
 	err := RemoveFile(s.path)	
-
 	c.Assert(err, IsNil)
 }
 
@@ -77,10 +71,5 @@ func (s *FileSuite) TestFileSize(c *C) {
 	// now lets make sure that the file path is correct
 	c.Assert(file.size, Equals, s.size)	
 }
-
-
-
-
-
 
 

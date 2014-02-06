@@ -30,14 +30,14 @@ fu! GoTestFile()
 	endif
 
 	" now run go tests
-	let command = "go test -v " . file . " test_bootstrap.go"
+	let command = "go test -gocheck.v " . file . " test_bootstrap.go"
 
 	" now run this command
 	call CleanShell(command)
 
 endfunction
 
-map <Leader>rr :call GoTestPackageVerbose()<CR>
+map <Leader>rr :call GoTestFile()<CR>
 map <Leader>r :call GoTestPackage()<CR>
 
 

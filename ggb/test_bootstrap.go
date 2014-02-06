@@ -2,8 +2,11 @@ package ggb
 
 import (
 
+	"math/rand"
 	. "launchpad.net/gocheck"
 	"os"
+	"time"
+
 )
 
 // generate teh test suite
@@ -18,6 +21,8 @@ var _ = Suite(&GGBSuite{})
 
 func (s * GGBSuite) SetUpSuite(c *C) {
 
+	// seed the random generator
+	rand.Seed(time.Now().UTC().UnixNano())
 
 }
 
