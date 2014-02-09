@@ -43,23 +43,50 @@ func TestProcessor(t * testing.T) {
 
 func (s *ProcessorSuite) TestProcessor(c *C) {
 
+	var element PushOperation
+
 	// test valid files as needed
 	go Processor(&s.waitGroup, s.push, s.comm, s.filePaths)
 
+	// wait for the waitgroup to finish
+	s.waitGroup.Wait()
 	
+	// now lets loop through each of the paths
+	for i := range s.filePaths {
 
+		element = <- s.push
 
+		// ensure that the files line up with the correct elements
+		c.Assert(s.files[i].path, Equals, element.file.path)
+		c.Assert(s.files[i].size, Equals, element.file.size)
+	}
 }
 
 func (s *ProcessorSuite) TestProcessorErrorHandling(c *C) {
 
+	var err error
+	var commOperation CommunicationOperation
+
 	// delete all the files before running processor
+	for i := range s.filePaths {
 
+		err = RemoveFile(s.filePaths[i])
+		c.Assert(err, IsNil)
+	}
+
+	// test valid files as needed
+	go Processor(&s.waitGroup, s.push, s.comm, s.filePaths)
+
+	s.waitGroup.Wait()
+
+	// now lets make sure we have errors as needed
+	for _ = range s.files {
+
+		commOperation = <- s.comm
+
+		c.Assert(commOperation, Not(IsNil))
+	}
 }
-
-
-
-
 
 
 
