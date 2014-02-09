@@ -30,11 +30,7 @@ func (s * GGBSuite) TearDownSuite(c *C) {
 
 // generate any global helper functions on this element as needed etc
 // create a dudd file with a bunch of random bytes
-// size in kilobytes
 func CreateFile(path string, size int64) error {
-
-	var offset int64
-	offset = 0
 
 	// create the file at the path
 	file, err := os.Create(path)
@@ -48,16 +44,11 @@ func CreateFile(path string, size int64) error {
 	// initialize kilobyte elements
 	byteArray := make([]byte,1)
 
-	// now lets loop through and write a byte to the file as needed
-	for i := 0; int64(i) < size; i++ {
+	_, err = file.WriteAt(byteArray, size)
 
-		_, err := file.WriteAt(byteArray, offset)
-		offset += 1
-
-		if err != nil {
-
-			return err
-		}
+	if err != nil {
+	
+		return err
 	}
 
 	return nil

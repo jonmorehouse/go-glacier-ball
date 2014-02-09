@@ -6,8 +6,6 @@ import (
 	"code.google.com/p/go-uuid/uuid"
 	"testing"
 	. "launchpad.net/gocheck"
-	"fmt"
-	"sync"
 )
 
 // bootstrap the suite into the current environment
@@ -28,43 +26,30 @@ type FileQueueSuite struct {
 func (s * FileQueueSuite) SetUpSuite(c *C) {
 
 	multiple := 256 * 1024 // kilobytes
-	var wg sync.WaitGroup
 
 	// create a list of files
 	for i := 1; i <= 5; i++ {
 
-		wg.Add(1)
+		// create a file of
+		path := "/tmp/go/" + uuid.New() + ".txt"
 
-		go func (wg * sync.WaitGroup) {
+		// initialize size of this file
+		size := int64(multiple * i)
 
-			// create a file of
-			path := "/tmp/go/" + uuid.New() + ".txt"
+		// create the sample file as needed
+		err := CreateFile(path, size)
 
-			// initialize size of this file
-			size := int64(multiple * i)
+		// make sure no error created with files
+		c.Assert(err, IsNil)
 
-			// create the sample file as needed
-			err := CreateFile(path, size)
+		// now that our file is created, createa  File struct to contain it
+		// we're storing pointers to these 
+		file,err := NewFile(path)
 
-			// make sure no error created with files
-			c.Assert(err, IsNil)
+		c.Assert(err, IsNil)
 
-			// now that our file is created, createa  File struct to contain it
-			// we're storing pointers to these 
-			file,err := NewFile(path)
-
-			c.Assert(err, IsNil)
-
-			s.files.PushBack(&file)
-
-			wg.Done()
-
-		}(&wg)
+		s.files.PushBack(&file)
 	}
-
-	//wg.Wait()
-
-			
 }
 
 func (s * FileQueueSuite) TearDownSuite(c *C) {
@@ -79,12 +64,15 @@ func (s * FileQueueSuite) TearDownSuite(c *C) {
 
 func (s *FileQueueSuite) TestFileQueue(c *C) {
 
-	fmt.Println("HELLO")
 	for e := s.files.Front(); e != nil; e = e.Next() {
 
-
+		// now lets queue these files up
+		
+		
 	}
 }
+
+
 
 
 
