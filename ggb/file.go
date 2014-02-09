@@ -3,13 +3,13 @@ package ggb
 import (
 
 	"os"
+
 )
 
 type File struct {
 
 	path string // full path of the string as needed for opening / archiving
 	size int64 // size in bytes
-
 }
 
 func NewFile (path string) (File, error) {
@@ -31,5 +31,8 @@ func NewFile (path string) (File, error) {
 
 	return file, nil
 }
+
+
+
 
 
