@@ -1,11 +1,14 @@
 package ggb
 
 import (
+
+	"code.google.com/p/go-uuid/uuid"
 	"math/rand"
 	. "launchpad.net/gocheck"
 	"os"
 	"time"
 )
+
 
 // generate teh test suite
 type GGBSuite struct {
@@ -27,6 +30,34 @@ func (s * GGBSuite) TearDownSuite(c *C) {
 
 
 }
+
+func CreateFileList(quantity int) []*File {
+
+	var path string
+	var size int64
+
+	// create files array
+	files := make([]*File, quantity)
+
+	// loop through and create all files as needed
+	for i := 0; i < quantity; i++ {
+
+		path = uuid.New() + ".txt"
+		size = int64(256) + rand.Int63n(1024)
+
+		// create file on disk
+		CreateFile(path, size)
+
+		// create file object
+		file, _ := NewFile(path)
+
+		// now that we have the file path created
+		files[i] = &file
+	}
+
+	return files
+}
+
 
 // generate any global helper functions on this element as needed etc
 // create a dudd file with a bunch of random bytes

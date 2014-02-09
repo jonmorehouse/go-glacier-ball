@@ -67,7 +67,6 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 
 				// push the response structure to the channel that is expecting it
 				comm.channel <- response
-
 			}
 
 		}// end of select statement 
@@ -75,18 +74,18 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 		// this worker is finished
 		if finished && queue.Len() == 0 {
 
+			// pass a message to the communication manager 
 			break
 
 		// end in the case of an error that was communicated from an outside process
 		} else if errorReported {
 
 			break
+
 		}
 	}
 
 	waitGroup.Done()
 }
-
-
 
 

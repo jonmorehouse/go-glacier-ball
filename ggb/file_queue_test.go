@@ -2,7 +2,7 @@ package ggb
 
 import (
 
-	"testing"
+	//"testing"
 	"sync"
 	. "launchpad.net/gocheck"
 )
@@ -20,10 +20,10 @@ type FileQueueSuite struct {
 var _ = Suite(&FileQueueSuite{})
 
 // bootstrap gocheck into current test environment
-func Test(t * testing.T) {
+//func TestFileQueue(t * testing.T) {
 
-	TestingT(t)
-}
+	//TestingT(t)
+//}
 
 // now lets test the basic functionality of the different elements as needed
 func (s * FileQueueSuite) SetUpSuite(c *C) {
@@ -77,5 +77,8 @@ func (s *FileQueueSuite) TestSuccessfulQueue(c *C) {
 	c.Assert(statusResponse.message.(int), Equals, 1)
 
 }
+
+
+
 
 

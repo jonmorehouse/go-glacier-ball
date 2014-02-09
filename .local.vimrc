@@ -1,3 +1,13 @@
+" 
+fu! GoTestPackageSuite()
+
+	let command = "go test -gocheck.f ProcessorSuite"
+
+	call CleanShell(command)
+
+endfunction
+
+" run a single test suite
 fu! GoTestPackage()
 
 	let command = "go test ."
@@ -37,7 +47,7 @@ fu! GoTestFile()
 
 endfunction
 
-map <Leader>rr :call GoTestFile()<CR>
+map <Leader>rr :call GoTestPackageSuite()<CR>
 map <Leader>r :call GoTestPackage()<CR>
 
 

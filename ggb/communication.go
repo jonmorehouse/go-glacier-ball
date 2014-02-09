@@ -9,7 +9,7 @@ const (
 
 	// error codes for various elements as needed
 	ERROR = 10 
-	ERROR_FILE_NOT_FOUND = 11
+	ERROR_FILE = 11
 	ERROR_UPLOAD_FAILED = 12
 
 	// large / small file sizes
