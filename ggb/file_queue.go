@@ -2,61 +2,9 @@ package ggb
 
 import (
 
-	"container/heap"
-	"fmt"
+	"container/list"
 	"sync"
 )
-
-type FileQueue []*File
-
-func NewFileQueue() * FileQueue {
-
-	fq := &FileQueue{}
-
-	heap.Init(fq)
-
-	return fq
-}
-
-func (fq FileQueue) Len() int {
-
-	return len(fq)
-
-}
-
-/*
-func (fq FileQueue) Push(file * File) {
-
-	heap.Push(fq, file)
-
-}
-
-func (fq FileQueue) Pop() * File {
-
-	if !fq.Empty() {
-
-		return heap.Pop(fq)		
-
-	} else {
-
-		return nil
-	}
-
-}
-
-func (fq FileQueue) Empty() bool { 
-
-	if len(fq) == 0 {
-
-		return true
-
-	} else {
-
-		return false
-
-	}
-}
-*/
 
 /*
 	assumes that all file structs are for legitimate files 
@@ -64,20 +12,19 @@ func (fq FileQueue) Empty() bool {
 	communication channel = read/write
 	push channel = read 
 	pop channel = read -- this is really a request pop
-
 */
 func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation, popChannel chan PopOperation, communicationChannel chan CommunicationOperation) {
 
 	// initialize queue - this should be a pointer
-	queue := NewFileQueue()
+	queue := list.New()
+	finished := false
+	errorReported := false
 
 	// initialize queue worker 
 	waitGroup.Add(1)
-	finished := false
 
 	// now lets go ahead 
 	for {
-
 		select {
 
 		// step 1 - see if we have anything for communication
@@ -85,12 +32,22 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 		case push := <- pushChannel:
 
 			// push into the channel  	
-			fmt.Println(push.message)
+			queue.PushBack(push.file)
 
 		// step 2 - queue up any files that need to be queued
 		case pop := <- popChannel:
 
-			fmt.Println(pop.message)
+			// now lets grab the last element in the list
+			element := queue.Back()
+
+			// grab the actual file 
+			file := element.Value.(*File)
+
+			// now remove the file from the list  
+			queue.Remove(element)
+
+			// now lets pipe the file pointer to the file as needed
+			pop.channel <- file
 
 		// step 3 - respond to any pop requests as needed
 		case comm := <- communicationChannel:
@@ -98,26 +55,37 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 			if comm.code == ALL_JOBS_SUBMITTED {
 
 				finished = true
+
+			} else if comm.code == ERROR {
+
+				errorReported = true
+
+			} else if comm.code == QUEUE_STATUS {
+
+				// create a response
+				response := CommunicationOperation{code: QUEUE_STATUS, message: queue.Len()}
+
+				// push the response structure to the channel that is expecting it
+				comm.channel <- response
+
 			}
-		}
+
+		}// end of select statement 
 
 		// this worker is finished
-		if finished /*&& list.Empty()*/ {
+		if finished && queue.Len() == 0 {
 
-			waitGroup.Done()
 			break
 
 		// end in the case of an error that was communicated from an outside process
-		} else if finished /*&& systemError */{
+		} else if errorReported {
 
-			waitGroup.Done()
 			break
 		}
 	}
 
-
+	waitGroup.Done()
 }
-
 
 
 
