@@ -3,8 +3,6 @@ package ggb
 import (
 
 	"sync"
-
-
 )
 
 /*
