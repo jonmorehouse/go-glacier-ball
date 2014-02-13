@@ -1,8 +1,10 @@
 package ggb
 
 import (
-
 	"sync"
+	"fmt"
+	"github.com/jonmorehouse/go-config/config"
+	"math"
 )
 
 /*
@@ -36,5 +38,25 @@ func Processor(waitGroup * sync.WaitGroup, push chan PushOperation, comm chan Co
 	}
 
 	waitGroup.Done()
+}
+
+func ProcessorManager(waitGroup * sync.WaitGroup, filePaths * []string) {
+
+	// localWaitGroup := sync.Waitgroup
+	numberWorkers := config.Value("MAX_GO_ROUTINES").(int) / 2
+	filesPerWorker := int(math.Ceil(float64(float64((len(*filePaths) + 3))/float64(numberWorkers))))
+	output := []string{}
+	for i := 0; i < numberWorkers; i++ {
+		leftIndex := i * filesPerWorker
+		rightIndex := ((i+1)*filesPerWorker)
+		// make sure we don't overshoot the right side of the array and add in empty values
+		if rightIndex > len(*filePaths) {
+			rightIndex = len(*filePaths)
+		}
+		workerFilePaths := copy(*filePaths)[leftIndex:rightIndex]
+	}
+
+	fmt.Println(len(output))
+
 }
 

@@ -1,7 +1,6 @@
 package ggb
 
 import (
-
 	"container/list"
 	"sync"
 )
@@ -19,16 +18,12 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 	queue := list.New()
 	finished := false
 	errorReported := false
-
-	// initialize queue worker 
 	waitGroup.Add(1)
 
-	// now lets go ahead 
 	for {
 		select {
 
 		// step 1 - see if we have anything for communication
-		// this can be a read or write operation
 		case push := <- pushChannel:
 
 			// push into the channel  	

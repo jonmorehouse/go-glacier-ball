@@ -1,10 +1,10 @@
 package ggb
 
 import (
-
 	"testing"
 	"sync"
 	. "launchpad.net/gocheck"
+	//"fmt"
 )
 
 type ProcessorSuite struct {
@@ -21,6 +21,7 @@ var _ = Suite(&ProcessorSuite{})
 
 func (s *ProcessorSuite) SetUpSuite(c *C) {
 
+	Bootstrap()
 	s.push = make(chan PushOperation, 100)
 	s.comm = make(chan CommunicationOperation)
 
@@ -88,6 +89,18 @@ func (s *ProcessorSuite) TestProcessorErrorHandling(c *C) {
 	}
 }
 
-
+func (s *ProcessorSuite) TestProcessorManager(c *C) {
+	
+	// create a longer list of all filepaths
+	filePaths := []string{}
+	// copy old paths into the new list 
+	for i := 0; i < 50; i++  {
+		filePaths = append(filePaths, s.filePaths...)
+	}
+	filePaths = append(filePaths, "ASDF")
+	// processor manager is responsible for booting up and managing all file process workers 
+	ProcessorManager(&s.waitGroup, &filePaths)
+	// wait for waitgroup to finish before running any tests
+}
 
 

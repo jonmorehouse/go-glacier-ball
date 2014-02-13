@@ -1,1 +1,2 @@
 source .goenv
+\. load_export_file .exports
