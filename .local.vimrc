@@ -1,31 +1,14 @@
-" 
-fu! GoTestPackageSuite()
+fu! GoCheckSuite()
 
-	let command = "go test -gocheck.f ProcessorSuite"
-
-	call CleanShell(command)
-
-endfunction
-
-" run a single test suite
-fu! GoTestPackage()
-
-	let command = "go test ."
+	let command = "GOPATH=". g:basePath . " go test -gocheck.f ProcessorSuite"
 
 	call CleanShell(command)
 
 endfunction
 
-fu! GoTestPackageVerbose() 
 
-	let command = "go test -gocheck.v ."
+fu! GoCheckFile()
 
-	call CleanShell(command)
-
-endfunction
-
-fu! GoTestFile()
-	
 	if @% !~ ".go"
 
 		return
@@ -40,14 +23,13 @@ fu! GoTestFile()
 	endif
 
 	" now run go tests
-	let command = "go test -gocheck.v " . file . " test_bootstrap.go"
+	let command = "GOPATH=". g:basePath . " go test -gocheck.v " . file . " test_bootstrap.go"
 
 	" now run this command
 	call CleanShell(command)
-
 endfunction
 
-map <Leader>rr :call GoTestPackageSuite()<CR>
-map <Leader>r :call GoTestPackage()<CR>
+map <Leader>rr :call GoCheckSuite()<CR>
+map <Leader>r :call GoCheckFile()<CR>
 
 

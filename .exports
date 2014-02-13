@@ -1,0 +1,5 @@
+# number of bytes we want each tarball to be
+# 1gb
+TARBALL_SIZE=$(expr 1024 \\* 1024 \\* 1024 )
+MAX_GO_ROUTINES=10
+

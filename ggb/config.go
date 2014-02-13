@@ -1,17 +1,17 @@
 package ggb
 
-// global variables needed throughout application
-type Config struct {
+import (
+	"github.com/jonmorehouse/go-config/config"
+)
 
-	// aws access credentials
-	AWS_ACCESS_KEY_ID string
-	AWS_ACCESS_KEY_SECRETE string
-
-	// max tarball size
-	TARBALL_SIZE int64
+func BootstrapConfig() {
+	envVars := []string{
+		"AWS_ACCESS_KEY_ID",
+		"AWS_ACCESS_KEY_SECRET",
+		"TARBALL_SIZE",
+		"GO_PROCESSES",
+	}
+	config.New()//instantiate config package 
+	config.Bootstrap(envVars) 
 }
-
-// now lets create the config element as needed
-var config * Config = nil
-
 

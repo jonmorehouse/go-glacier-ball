@@ -4,7 +4,6 @@ import (
 
 	"os"
 	"bufio"
-	"sync"
 )
 
 func main() {

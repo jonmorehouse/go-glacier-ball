@@ -17,15 +17,12 @@ import (
 */
 func Worker(waitGroup * sync.WaitGroup, communication chan CommunicationOperation, pop chan PopOperation, push chan PushOperation) {
 
-	waitGroup.Add(1)
+	//waitGroup.Add(1)
 
 	// should recieve a notice when this is the last run
 	// this should be when the queue is empty
 	
 
-
-
-
-	waitGroup.Done(1)
+	//waitGroup.Done(1)
 
 }
