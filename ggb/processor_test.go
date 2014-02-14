@@ -1,7 +1,7 @@
 package ggb
 
 import (
-	"testing"
+	//"testing"
 	"sync"
 	. "launchpad.net/gocheck"
 	//"fmt"
@@ -19,10 +19,14 @@ type ProcessorSuite struct {
 
 var _ = Suite(&ProcessorSuite{})
 
+//func TestProcessor(t * testing.T) {
+
+	//TestingT(t)
+//}
+
 func (s *ProcessorSuite) SetUpSuite(c *C) {
 
 	Bootstrap()
-	s.push = make(chan PushOperation, 100)
 	s.comm = make(chan CommunicationOperation)
 
 	// create the files as needed
@@ -33,21 +37,15 @@ func (s *ProcessorSuite) SetUpSuite(c *C) {
 
 		s.filePaths = append(s.filePaths, s.files[i].path)
 	}
-
 }
 
-// 
-func TestProcessor(t * testing.T) {
-
-	TestingT(t)
-}
 
 func (s *ProcessorSuite) TestProcessor(c *C) {
 
 	var element PushOperation
 
 	// test valid files as needed
-	go Processor(&s.waitGroup, s.push, s.comm, s.filePaths)
+	go Processor(&s.waitGroup, s.comm, s.filePaths)
 
 	// wait for the waitgroup to finish
 	s.waitGroup.Wait()
@@ -55,13 +53,14 @@ func (s *ProcessorSuite) TestProcessor(c *C) {
 	// now lets loop through each of the paths
 	for i := range s.filePaths {
 
-		element = <- s.push
+		element = <- push
 
 		// ensure that the files line up with the correct elements
 		c.Assert(s.files[i].path, Equals, element.file.path)
 		c.Assert(s.files[i].size, Equals, element.file.size)
 	}
 }
+
 
 func (s *ProcessorSuite) TestProcessorErrorHandling(c *C) {
 
@@ -76,7 +75,7 @@ func (s *ProcessorSuite) TestProcessorErrorHandling(c *C) {
 	}
 
 	// test valid files as needed
-	go Processor(&s.waitGroup, s.push, s.comm, s.filePaths)
+	go Processor(&s.waitGroup, s.comm, s.filePaths)
 
 	s.waitGroup.Wait()
 
@@ -90,8 +89,6 @@ func (s *ProcessorSuite) TestProcessorErrorHandling(c *C) {
 }
 
 func (s *ProcessorSuite) TestProcessorManager(c *C) {
-	
-	// create a longer list of all filepaths
 	filePaths := []string{}
 	// copy old paths into the new list 
 	for i := 0; i < 50; i++  {
@@ -102,5 +99,4 @@ func (s *ProcessorSuite) TestProcessorManager(c *C) {
 	ProcessorManager(&s.waitGroup, &filePaths)
 	// wait for waitgroup to finish before running any tests
 }
-
 

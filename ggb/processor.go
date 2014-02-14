@@ -2,7 +2,6 @@ package ggb
 
 import (
 	"sync"
-	"fmt"
 	"github.com/jonmorehouse/go-config/config"
 	"math"
 )
@@ -13,7 +12,7 @@ import (
 	create file structs for each and submit them to our file manager
 	errors are reported in the communication channel
 */
-func Processor(waitGroup * sync.WaitGroup, push chan PushOperation, comm chan CommunicationOperation, files []string) {
+func Processor(waitGroup * sync.WaitGroup, comm chan CommunicationOperation, files []string) {
 
 	waitGroup.Add(1)
 
@@ -36,27 +35,28 @@ func Processor(waitGroup * sync.WaitGroup, push chan PushOperation, comm chan Co
 			push <- PushOperation{file: &file}
 		}
 	}
-
 	waitGroup.Done()
 }
 
 func ProcessorManager(waitGroup * sync.WaitGroup, filePaths * []string) {
-
-	// localWaitGroup := sync.Waitgroup
+	
+	var localWaitGroup sync.WaitGroup
 	numberWorkers := config.Value("MAX_GO_ROUTINES").(int) / 2
 	filesPerWorker := int(math.Ceil(float64(float64((len(*filePaths) + 3))/float64(numberWorkers))))
-	output := []string{}
 	for i := 0; i < numberWorkers; i++ {
-		leftIndex := i * filesPerWorker
-		rightIndex := ((i+1)*filesPerWorker)
-		// make sure we don't overshoot the right side of the array and add in empty values
-		if rightIndex > len(*filePaths) {
-			rightIndex = len(*filePaths)
+		// generate how long the individual worker's path array is
+		index := filesPerWorker
+		if index > len(*filePaths) {
+			index = len(*filePaths)
 		}
-		workerFilePaths := copy(*filePaths)[leftIndex:rightIndex]
+		// generate the filePaths slice and then pass it to the go routine that will be processing this
+		workerFilePaths := []string{}
+		copy(workerFilePaths, (*filePaths)[0:index])
+		go Processor(&localWaitGroup, errorComm, workerFilePaths)
+		// remove this piece of the slice from the original slice 
+		(*filePaths) = (*filePaths)[index:]
 	}
-
-	fmt.Println(len(output))
+	localWaitGroup.Wait()
 
 }
 

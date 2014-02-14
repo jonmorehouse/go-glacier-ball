@@ -3,11 +3,24 @@ package ggb
 import (
 	"github.com/jonmorehouse/go-config/config"
 	"log"
+	"fmt"
 )
 
 // global file queue interaction channels
 var pop chan PopOperation
-var push chan PushOperation
+var push  chan PushOperation
+var errorComm chan CommunicationOperation
+
+func ErrorHandler() {
+
+	var operation CommunicationOperation
+
+	for {
+		operation = <- errorComm
+		
+		fmt.Println(operation)
+	}
+}
 
 func Bootstrap() {
 	// setup configuration
@@ -26,5 +39,6 @@ func Bootstrap() {
 	// build out global channels 
 	pop = make(chan PopOperation, 1000)
 	push = make(chan PushOperation, 1000)
+	errorComm = make(chan CommunicationOperation, 1000)
 }
 

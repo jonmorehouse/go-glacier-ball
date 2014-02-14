@@ -76,7 +76,6 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 		} else if errorReported {
 
 			break
-
 		}
 	}
 
