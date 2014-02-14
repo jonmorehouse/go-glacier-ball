@@ -3,7 +3,6 @@ package ggb
 import (
 	. "launchpad.net/gocheck"
 	"testing"
-	"fmt"
 )
 
 type BootstrapSuite struct {}
@@ -18,8 +17,11 @@ func (s *BootstrapSuite) SetUpSuite(c *C) {
 }
 
 func (s *BootstrapSuite) TestErrorHandler(c *C) {
+	// create a nonsimple error operation
 	errorOperation := CommunicationOperation{}
-
+	// start go worker for error handling - need to figure out a nice way to handle tests on this element as needed
+	go ErrorHandler()
+	errorComm <- errorOperation
 }
 
 

@@ -1,6 +1,6 @@
 fu! GoCheckSuite()
 
-	let command = "GOPATH=". g:basePath . " go test -gocheck.f BootstrapSuite"
+	let command = "GOPATH=". g:basePath . " go test -gocheck.f ProcessorSuite"
 
 	call CleanShell(command)
 
