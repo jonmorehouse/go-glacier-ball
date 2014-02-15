@@ -3,6 +3,7 @@ package ggb
 import (
 	"container/list"
 	"sync"
+	"errors"
 )
 
 /*
@@ -31,18 +32,22 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 
 		// step 2 - queue up any files that need to be queued
 		case pop := <- popChannel:
+			
+			if queue.Len() == 0 {//no elements to pass back -- pas an error
+				pop.channel <- PopResponseOperation{err: errors.New("Queue empty")}
+			} else {
+				// now lets grab the last element in the list
+				element := queue.Back()
 
-			// now lets grab the last element in the list
-			element := queue.Back()
+				// grab the actual file 
+				file := element.Value.(*File)
 
-			// grab the actual file 
-			file := element.Value.(*File)
+				// now remove the file from the list  
+				queue.Remove(element)
 
-			// now remove the file from the list  
-			queue.Remove(element)
-
-			// now lets pipe the file pointer to the file as needed
-			pop.channel <- file
+				// now lets pipe the file pointer to the file as needed
+				pop.channel <- PopResponseOperation{file: file}
+			}
 
 		// step 3 - respond to any pop requests as needed
 		case comm := <- communicationChannel:

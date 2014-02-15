@@ -9,9 +9,12 @@ const (
 	ERROR = 10 
 	ERROR_FILE = 11
 	ERROR_UPLOAD_FAILED = 12
+	ERROR_TARBALL_FILE = 13
+
 	// large / small file sizes
 	LARGE_FILE = 20
 	SMALL_FILE = 21
+
 )
 
 type CommunicationOperation struct {
@@ -23,12 +26,18 @@ type CommunicationOperation struct {
 	channel chan CommunicationOperation 
 }
 
+type PopResponseOperation struct {
+
+	file * File
+	err error
+}
+
 type PopOperation struct {
 
 	// request a file. This should respond with a status code
 	// should pass a pointer to a file channel
 	// this should be writable on the the worker's end
-	channel chan * File // this is where we will spit the file back
+	channel chan PopResponseOperation // this is where we will spit the file back
 }
 
 type PushOperation struct {

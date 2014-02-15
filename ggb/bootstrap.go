@@ -10,6 +10,9 @@ var pop chan PopOperation
 var push  chan PushOperation
 var errorComm chan CommunicationOperation
 
+// global variables 
+var tarballCounter int64 
+
 func ErrorHandler() {
 	var operation CommunicationOperation
 	// initialize our fatal errors associative arry
@@ -52,7 +55,6 @@ func Bootstrap() {
 	// start up goworker for handling errors
 	go ErrorHandler()
 }
-
 
 
 

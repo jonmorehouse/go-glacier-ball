@@ -1,6 +1,6 @@
 fu! GoCheckSuite()
 
-	let command = "GOPATH=". g:basePath . " go test -gocheck.f ProcessorSuite"
+	let command = "GOPATH=". g:basePath . " go test -gocheck.f FileQueueSuite"
 
 	call CleanShell(command)
 
@@ -31,5 +31,3 @@ endfunction
 
 map <Leader>rr :call GoCheckSuite()<CR>
 map <Leader>r :call GoCheckFile()<CR>
-
-

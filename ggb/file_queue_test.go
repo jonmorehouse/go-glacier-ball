@@ -45,7 +45,7 @@ func (s *FileQueueSuite) TestSuccessfulQueue(c *C) {
 	push := PushOperation{file: &File{path: "test.txt", size: 10000}}
 
 	// initialize a pop operation - this should allow us to grab a file
-	pop := PopOperation{channel: make(chan *File, 1)}
+	pop := PopOperation{channel: make(chan PopResponseOperation, 1)}
 
 	// communication operation - signify end of submissions 
 	comm := CommunicationOperation{code: ALL_JOBS_SUBMITTED}
@@ -63,19 +63,19 @@ func (s *FileQueueSuite) TestSuccessfulQueue(c *C) {
 	s.waitGroup.Wait()
 
 	// now that we are finished - lets assert that the popChannel has something buffered 
-	fileResponse := <- pop.channel
+	popResponse := <- pop.channel
 	statusResponse := <- status.channel 
 
 	// now lets make sure that the file is not nil 
-	c.Assert(fileResponse, Not(Equals), nil)
-	c.Assert(fileResponse.path, Not(Equals), nil)
+	c.Assert(popResponse, Not(Equals), nil)
+	c.Assert(popResponse.err, IsNil)
+	c.Assert(popResponse.file.path, Not(Equals), nil)
 
 	// check out status response
 	c.Assert(statusResponse, Not(Equals), nil)
 	
 	// now ensure that we got the correct response for the status back
 	c.Assert(statusResponse.message.(int), Equals, 1)
-
 }
 
 
