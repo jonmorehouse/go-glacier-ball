@@ -6,7 +6,7 @@ import (
 )
 
 func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation) {
-
+	
 	defer waitGroup.Done()
 	var tarball * Tarball
 	finished := false 
@@ -54,6 +54,7 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 			break
 		}
 	}
+
 }
 
 

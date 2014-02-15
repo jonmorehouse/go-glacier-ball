@@ -16,7 +16,6 @@ type ProcessorSuite struct {
 var _ = Suite(&ProcessorSuite{})
 
 func (s *ProcessorSuite) SetUpSuite(c *C) {
-
 	Bootstrap()
 }
 
@@ -36,15 +35,9 @@ func (s *ProcessorSuite) SetUpTest(c *C) {
 }
 
 func (s *ProcessorSuite) TearDownTest(c *C) {
-
-	for i := range s.filePaths {
-		_ = RemoveFile(s.filePaths[i])
-	}
-
-	s.files = []*File{}
+	RemoveFiles(&s.files)
 	s.filePaths = []string{}
 }
-
 
 func (s *ProcessorSuite) TestProcessor(c *C) {
 	var element PushOperation

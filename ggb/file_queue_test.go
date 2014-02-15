@@ -40,7 +40,6 @@ func (s * FileQueueSuite) SetUpSuite(c *C) {
 func (s *FileQueueSuite) TestSuccessfulQueue(c *C) {
 
 	// initialize channel operations needed  
-
 	// push in a dudd file
 	push := PushOperation{file: &File{path: "test.txt", size: 10000}}
 

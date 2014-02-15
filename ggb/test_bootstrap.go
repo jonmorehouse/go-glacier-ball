@@ -89,13 +89,19 @@ func RemoveFile(path string) error {
 
 	// remove file
 	err := os.Remove(path)
-
 	if err != nil {
-
 		return err
-
 	}
-
 	return nil
 }
+
+func RemoveFiles(files * []*File) {
+	for i := range *files {
+		_ = RemoveFile((*files)[i].path)	
+	}
+	*files = []*File{}
+}
+
+
+
 
