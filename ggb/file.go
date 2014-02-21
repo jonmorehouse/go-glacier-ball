@@ -1,9 +1,7 @@
 package ggb
 
 import (
-
 	"os"
-
 )
 
 type File struct {

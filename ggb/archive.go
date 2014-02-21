@@ -15,4 +15,3 @@ type Archive struct {
 // upload function -- upload to glacier -- this could possibly be its own module as needed
 // clean up / destroy -- delete local tarball as needed
 
-

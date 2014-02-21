@@ -3,6 +3,7 @@ package ggb
 import (
 	"github.com/jonmorehouse/go-config/config"
 	"log"
+	"time"
 )
 
 // global file queue interaction channels
@@ -11,7 +12,7 @@ var push  chan PushOperation
 var errorComm chan CommunicationOperation
 
 // global variables 
-var tarballCounter int64 
+var tarballCounter int32
 
 func ErrorHandler() {
 	var operation CommunicationOperation
@@ -31,13 +32,15 @@ func Bootstrap() {
 	envVars := []string{
 		"AWS_REGION",
 		"AWS_SECRET_ACCESS_KEY",
+		"AWS_BUCKET",
 		"AWS_ACCESS_KEY_ID",
-		"TARBALL_SIZE",
+		"MAX_TARBALL_SIZE",
 		"MAX_GO_ROUTINES",
 	}
 	fatalErrors := map[int]bool{
 		ERROR: true,
 		ERROR_UPLOAD_FAILED: true,
+		ERROR_TARBALL_CREATION: true,
 	}
 	config.New()//instantiate config package 
 	err := config.Bootstrap(envVars) 
@@ -48,6 +51,7 @@ func Bootstrap() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = config.Set("TARBALL_PREFIX", string(time.Now().Unix()))
 	// build out global channels 
 	pop = make(chan PopOperation, 1000)
 	push = make(chan PushOperation, 1000)
@@ -55,6 +59,5 @@ func Bootstrap() {
 	// start up goworker for handling errors
 	go ErrorHandler()
 }
-
 
 

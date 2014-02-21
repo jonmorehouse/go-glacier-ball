@@ -3,6 +3,7 @@ package ggb
 import (
 	"sync"
 	"sync/atomic"
+	"github.com/jonmorehouse/go-config/config"
 )
 
 func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation) {
@@ -15,12 +16,17 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 	addFile := func(file * File) {
 		if tarball == nil {
 			// increase tarball counter by 1
-			id := atomic.AddInt64(&tarballCounter, 1)	
+			id := atomic.AddInt32(&tarballCounter, 1)	
 			// create a new tarball
-			tarball = NewTarball(id)
+			newTarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string), id)
+			if err != nil {// this should be handled as fatal in the our go handler
+				errorComm <- CommunicationOperation{code: ERROR_TARBALL_CREATION, err: err}
+			} else {// transfer the pointers as needed
+				tarball = newTarball
+			}
 		}
 		// add a file to the tarball now that we know it exists successfully
-		err := tarball.AddFile(file)
+		_, err := tarball.AddFile(file)
 		if err != nil {
 			commChannel <- CommunicationOperation{code: ERROR_TARBALL_FILE, err: err}
 		}

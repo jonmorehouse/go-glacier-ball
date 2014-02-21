@@ -10,6 +10,7 @@ const (
 	ERROR_FILE = 11
 	ERROR_UPLOAD_FAILED = 12
 	ERROR_TARBALL_FILE = 13
+	ERROR_TARBALL_CREATION = 14
 
 	// large / small file sizes
 	LARGE_FILE = 20
