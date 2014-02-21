@@ -2,12 +2,12 @@ package ggb
 
 import (
 	"os"
+	"io"
+	"strconv"
 	"sync/atomic"
 	"archive/tar"
-	"io"
 	"compress/gzip"
 	"github.com/jonmorehouse/go-config/config"
-	"strconv"
 )
 
 type Tarball struct {
@@ -26,7 +26,7 @@ type Tarball struct {
 
 func NewTarball(prefix string, id int32) (*Tarball, error) {
 	// generate keys and id for this file 
-	key := prefix + strconv.Itoa(int(id)) + ".tar.gz" 
+	key := string(prefix) + strconv.Itoa(int(id)) + ".tar.gz" 
 	file, err := os.Create(key)
 	if err != nil {// return the error - our caller will pass to global error handler if necessary
 		return nil, err
@@ -57,16 +57,18 @@ func (t *Tarball) AddFile(file *File) (*Tarball, error) {
 		if err != nil {
 			return nil, err
 		} else {// add this larger file into the tarball as needed
-			err = tarball.addFile(file)	
-			if err != nil {
+			if err := tarball.addFile(file); err != nil {
+				return nil, err
+			} 
+			if err := tarball.Upload(); err != nil {
 				return nil, err
 			}
-			// no lets upload / finalize this tarball
+			return tarball, nil
 		}
-
-	} else {
-		// simply add the file to the current archive and return
-
+	} else {// fits in our current archive. add it like normal
+		if err := t.addFile(file); err != nil {
+			return nil, err
+		}
 	}
 	return nil, nil
 }
@@ -121,7 +123,13 @@ func (t *Tarball) Upload() error {
 	if err != nil {
 		return err
 	}
+	// now upload the file to 
+
+
 	return nil
 }
+
+
+
 
 

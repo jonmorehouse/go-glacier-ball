@@ -4,6 +4,7 @@ import (
 	"github.com/jonmorehouse/go-config/config"
 	"log"
 	"time"
+	"strconv"
 )
 
 // global file queue interaction channels
@@ -32,8 +33,8 @@ func Bootstrap() {
 	envVars := []string{
 		"AWS_REGION",
 		"AWS_SECRET_ACCESS_KEY",
-		"AWS_BUCKET",
 		"AWS_ACCESS_KEY_ID",
+		"BUCKET_NAME",
 		"MAX_TARBALL_SIZE",
 		"MAX_GO_ROUTINES",
 	}
@@ -43,15 +44,15 @@ func Bootstrap() {
 		ERROR_TARBALL_CREATION: true,
 	}
 	config.New()//instantiate config package 
-	err := config.Bootstrap(envVars) 
-	if err != nil {
+	if err := config.Bootstrap(envVars); err != nil {
 		log.Fatal(err)
 	}
-	err = config.Set("FATAL_ERRORS", fatalErrors)
-	if err != nil {
+	if err := config.Set("FATAL_ERRORS", fatalErrors); err != nil {
 		log.Fatal(err)
 	}
-	err = config.Set("TARBALL_PREFIX", string(time.Now().Unix()))
+	if err := config.Set("TARBALL_PREFIX", strconv.Itoa(int(time.Now().Unix())) + "-"); err != nil {
+		log.Fatal(err)
+	}
 	// build out global channels 
 	pop = make(chan PopOperation, 1000)
 	push = make(chan PushOperation, 1000)
