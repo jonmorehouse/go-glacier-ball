@@ -8,7 +8,12 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"github.com/jonmorehouse/go-config/config"
+	"launchpad.net/goamz/aws"
+	"launchpad.net/goamz/s3"
 )
+
+const contentType = "application/xtar"
+const permissions = s3.PublicReadWrite
 
 type Tarball struct {
 	// public components
@@ -51,7 +56,7 @@ func NewTarball(prefix string, id int32) (*Tarball, error) {
 // Add a file and upload/create a new tarball if necessary 
 func (t *Tarball) AddFile(file *File) (*Tarball, error) {
 	// check to see if we have room in the current tarball
-	if file.size > config.Value("MAX_TARBALL_SIZE").(int64) || t.size + file.size > config.Value("MAX_TARBALL_SIZE").(int64) {
+	if file.size > int64(config.Value("MAX_TARBALL_SIZE").(int)) || t.size + file.size > int64(config.Value("MAX_TARBALL_SIZE").(int)) {
 		// create a single tarball upload for this element
 		tarball, err := NewTarball(t.Prefix, atomic.AddInt32(&tarballCounter, 1))
 		if err != nil {
@@ -86,7 +91,6 @@ func (t *Tarball) close() error {
 	return nil
 }
 
-
 func (t *Tarball) addFile(file *File) error {
 	// grab a handle on the file to read it into the buffer
 	fr, err := os.Open(file.path)
@@ -118,18 +122,27 @@ func (t *Tarball) addFile(file *File) error {
 }
 
 func (t *Tarball) Upload() error {
-	// upload the tarball to the bucket of choice
-	err := t.close()
-	if err != nil {
+	file * os.File
+	err error
+	if t.closed {
+		file, err = os.Open(t.Key)
+		if err != nil {
+			return err
+		}
+	} else {
+		t.tw.Close()
+		t.gz.Close()
+		file = t.file
+	}
+	defer file.Close()
+	stat := file.Stat()
+	// now set up the bucket and prepare for the upload
+	s3Conn := s3.New(config.Value("AWS_AUTH").(aws.Auth), config.Value("AWS_REGION").(aws.Region))
+	bucket := s3.Bucket(config.Value("BUCKET_NAME").(string))
+	// now lets upload the file
+	if err := bucket.PutReader(t.Key, file, stat.size, contentType, permissions); err != nil {
 		return err
 	}
-	// now upload the file to 
-
-
 	return nil
 }
-
-
-
-
 

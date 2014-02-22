@@ -1,6 +1,7 @@
 package ggb
 
 import (
+	"launchpad.net/goamz/aws"
 	"github.com/jonmorehouse/go-config/config"
 	"log"
 	"time"
@@ -31,9 +32,6 @@ func ErrorHandler() {
 func Bootstrap() {
 	// setup configuration
 	envVars := []string{
-		"AWS_REGION",
-		"AWS_SECRET_ACCESS_KEY",
-		"AWS_ACCESS_KEY_ID",
 		"BUCKET_NAME",
 		"MAX_TARBALL_SIZE",
 		"MAX_GO_ROUTINES",
@@ -47,10 +45,21 @@ func Bootstrap() {
 	if err := config.Bootstrap(envVars); err != nil {
 		log.Fatal(err)
 	}
+	if err := config.Set("AWS_REGION", aws.USEast); err != nil {
+		log.Fatal(err)	
+	}
 	if err := config.Set("FATAL_ERRORS", fatalErrors); err != nil {
 		log.Fatal(err)
 	}
 	if err := config.Set("TARBALL_PREFIX", strconv.Itoa(int(time.Now().Unix())) + "-"); err != nil {
+		log.Fatal(err)
+	}
+	// now set up aws authentication
+	auth, err := aws.EnvAuth()
+	if err != nil {
+		log.Fatal(err)		
+	}
+	if err := config.Set("AWS_AUTH", auth); err != nil {
 		log.Fatal(err)
 	}
 	// build out global channels 
