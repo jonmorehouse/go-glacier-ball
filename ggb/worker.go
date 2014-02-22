@@ -60,7 +60,6 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 			break
 		}
 	}
-
 }
 
 
