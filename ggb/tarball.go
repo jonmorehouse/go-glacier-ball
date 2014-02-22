@@ -10,6 +10,7 @@ import (
 	"github.com/jonmorehouse/go-config/config"
 	"launchpad.net/goamz/aws"
 	"launchpad.net/goamz/s3"
+	"fmt"
 )
 
 const contentType = "application/xtar"
@@ -122,25 +123,29 @@ func (t *Tarball) addFile(file *File) error {
 }
 
 func (t *Tarball) Upload() error {
-	file * os.File
-	err error
+	var file * os.File
 	if t.closed {
-		file, err = os.Open(t.Key)
+		_file, err := os.Open(t.Key)
 		if err != nil {
 			return err
 		}
+		file = _file
 	} else {
 		t.tw.Close()
 		t.gz.Close()
 		file = t.file
 	}
 	defer file.Close()
-	stat := file.Stat()
+	stat, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	fmt.Println(stat.Size())
 	// now set up the bucket and prepare for the upload
 	s3Conn := s3.New(config.Value("AWS_AUTH").(aws.Auth), config.Value("AWS_REGION").(aws.Region))
-	bucket := s3.Bucket(config.Value("BUCKET_NAME").(string))
+	bucket := s3Conn.Bucket(config.Value("BUCKET_NAME").(string))
 	// now lets upload the file
-	if err := bucket.PutReader(t.Key, file, stat.size, contentType, permissions); err != nil {
+	if err := bucket.PutReader(t.Key, file, stat.Size(), contentType, permissions); err != nil {
 		return err
 	}
 	return nil
