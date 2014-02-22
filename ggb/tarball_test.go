@@ -9,6 +9,7 @@ import (
 type TarballSuite struct {
 	files []*File
 	filePaths []string 
+	tarball * Tarball
 }
 
 var _ = Suite(&TarballSuite{})
@@ -25,9 +26,17 @@ func (s *TarballSuite) TearDownSuite(c *C) {
 	RemoveFiles(&s.files)
 }
 
+func (s *TarballSuite) TearDownTest(c *C) {
+	if s.tarball != nil {
+		err := s.tarball.Delete()
+		c.Assert(err, IsNil)
+	}
+}
+
 func (s *TarballSuite) TestNewTarball(c *C) {
 	id := int32(3285)
 	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string), id)
+	s.tarball = tarball
 	c.Assert(tarball, NotNil)
 	c.Assert(err, IsNil)
 	// now lets make sure that we have set the parameters properly
@@ -42,6 +51,7 @@ func (s *TarballSuite) TestNewTarball(c *C) {
 func (s *TarballSuite) TestUpload(c *C) {
 
 	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string), 2854)
+	s.tarball = tarball
 	c.Assert(err, IsNil)
 	c.Assert(tarball, NotNil)
 	// add a file to the archive
@@ -53,14 +63,5 @@ func (s *TarballSuite) TestUpload(c *C) {
 	c.Assert(err, IsNil)
 }
 
-func (s *TarballSuite) TestAddFile(c *C) {
-
-
-}
-
-func (s *TarballSuite) TestaddFile(c *C) {
-
-
-}
 
 

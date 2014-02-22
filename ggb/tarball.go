@@ -122,18 +122,21 @@ func (t *Tarball) addFile(file *File) error {
 	return nil
 }
 
+func (t *Tarball) Delete() error {
+	
+	if err := os.Remove(t.Key); err != nil {
+		return nil
+	}
+	return nil
+	
+}
+
 func (t *Tarball) Upload() error {
-	var file * os.File
-	if t.closed {
-		_file, err := os.Open(t.Key)
-		if err != nil {
-			return err
-		}
-		file = _file
-	} else {
-		t.tw.Close()
-		t.gz.Close()
-		file = t.file
+	// make sure the tarball is completed etc
+	t.close()
+	file, err := os.Open(t.Key)
+	if err != nil {
+		return err
 	}
 	defer file.Close()
 	stat, err := file.Stat()
