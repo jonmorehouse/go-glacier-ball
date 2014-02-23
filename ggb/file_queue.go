@@ -23,13 +23,10 @@ func FileQueueManager(waitGroup * sync.WaitGroup, communicationChannel chan Comm
 
 	for {
 		select {
-
 		// step 1 - see if we have anything for communication
 		case pushOperation := <- push:
-
 			// push into the channel  	
 			queue.PushBack(pushOperation.file)
-
 		// step 2 - queue up any files that need to be queued
 		case popOperation := <- pop:
 			if queue.Len() == 0 {//no elements to pass back -- pas an error
@@ -37,17 +34,13 @@ func FileQueueManager(waitGroup * sync.WaitGroup, communicationChannel chan Comm
 			} else {
 				// now lets grab the last element in the list
 				element := queue.Back()
-
 				// grab the actual file 
 				file := element.Value.(*File)
-
 				// now remove the file from the list  
 				queue.Remove(element)
-
 				// now lets pipe the file pointer to the file as needed
 				popOperation.channel <- PopResponseOperation{file: file}
 			}
-
 		// step 3 - respond to any pop requests as needed
 		case comm := <- communicationChannel:
 			if comm.code == ALL_JOBS_SUBMITTED {

@@ -1,13 +1,14 @@
 package ggb
 
 import (
-	"fmt"
 	"sync"
 	. "launchpad.net/gocheck"
 )
 
 type WorkerSuite struct {
 
+	comm chan CommunicationOperation
+	fwg sync.WaitGroup
 	wg sync.WaitGroup
 	files []*File
 	filePaths []string
@@ -16,18 +17,20 @@ type WorkerSuite struct {
 var _ = Suite(&WorkerSuite{})
 
 func (s *WorkerSuite) SetUpSuite(c *C) {
-
 	Bootstrap()
 }
 
 func (s *WorkerSuite) SetUpTest(c *C) {
 	// generate the files 
+	s.comm = make(chan CommunicationOperation)
 	s.files = CreateFileList(50)
 	for i := range s.files {
 		s.filePaths = append(s.filePaths, s.files[i].path)
 	}
+	go FileQueueManager(&s.fwg, s.comm)// master communication processor
 	// now process them
-	go ProcessorManager(&s.wg, &s.filePaths)
+	s.wg.Add(1)
+	go ProcessorManager(&s.wg, &s.filePaths)// this queues up all the files
 	s.wg.Wait()
 }
 
@@ -38,18 +41,13 @@ func (s *WorkerSuite) TearDownTest(c *C) {
 }
 
 func (s *WorkerSuite) TestWorker(c *C) {
-
-	popResponseChannel := make(chan PopResponseOperation, 10)
-	c.Assert(popResponseChannel, NotNil)
-
-	// submit a pop request
-	pop <- PopOperation{channel: popResponseChannel}
-	popResponse := <- popResponseChannel
-
-	fmt.Println(popResponse)
-
+	
+	comm := make(chan CommunicationOperation)
+	s.wg.Add(1)
+	go Worker(&s.wg, comm)
+	s.wg.Wait()
+	// worker should be done processing all of the files
+	// check the bucket for the tarball keys as needed
 
 }
-
-
 

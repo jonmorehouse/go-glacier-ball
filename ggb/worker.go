@@ -2,10 +2,28 @@ package ggb
 
 import (
 	"sync"
-	"sync/atomic"
-	"github.com/jonmorehouse/go-config/config"
+	//"sync/atomic"
+	//"github.com/jonmorehouse/go-config/config"
+	"fmt"
 )
 
+func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation) {
+
+	popReciever := make(chan PopResponseOperation, 10)
+	iter := 0
+	for {
+		pop <- PopOperation{channel: popReciever}
+		response := <- popReciever	
+		if response.err != nil {
+			break
+		}
+		fmt.Println(response)
+		iter += 1
+	}
+	waitGroup.Done()
+}
+
+/*
 func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation) {
 	
 	defer waitGroup.Done()
@@ -39,12 +57,12 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 	// need a channel for grabbing file queue elements as needed
 	for {
 		select {
-		case _ = <- commChannel:
+		case _ = <- commChannel:// this worker is being flagged to finish
 			// in case somethign pushes into our communication channel to force a stop -- this can be removed later?
 			tarball.Upload()	
 			finished = true
 		default: 
-			// try to make a pop from teh fileQueue as needed
+			// try to make a pop from the fileQueue as needed
 			pop <- PopOperation{channel: popResponseChannel}
 			// now wait for a response on this element
 			response := <- popResponseChannel
@@ -61,5 +79,4 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 		}
 	}
 }
-
-
+*/

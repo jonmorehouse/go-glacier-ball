@@ -10,7 +10,6 @@ import (
 	"github.com/jonmorehouse/go-config/config"
 	"launchpad.net/goamz/aws"
 	"launchpad.net/goamz/s3"
-	"fmt"
 )
 
 const contentType = "application/xtar"
@@ -143,7 +142,6 @@ func (t *Tarball) Upload() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(stat.Size())
 	// now set up the bucket and prepare for the upload
 	s3Conn := s3.New(config.Value("AWS_AUTH").(aws.Auth), config.Value("AWS_REGION").(aws.Region))
 	bucket := s3Conn.Bucket(config.Value("BUCKET_NAME").(string))

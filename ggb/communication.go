@@ -16,7 +16,6 @@ const (
 	// large / small file sizes
 	LARGE_FILE = 20
 	SMALL_FILE = 21
-
 )
 
 type CommunicationOperation struct {
