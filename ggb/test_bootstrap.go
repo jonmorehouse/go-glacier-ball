@@ -95,7 +95,7 @@ func RemoveFile(path string) error {
 	return nil
 }
 
-func RemoveFiles(files * []*File) {
+func RemoveFileList(files * []*File) {
 	for i := range *files {
 		_ = RemoveFile((*files)[i].path)	
 	}

@@ -35,7 +35,7 @@ func (s *ProcessorSuite) SetUpTest(c *C) {
 }
 
 func (s *ProcessorSuite) TearDownTest(c *C) {
-	RemoveFiles(&s.files)
+	RemoveFileList(&s.files)
 	s.filePaths = []string{}
 }
 

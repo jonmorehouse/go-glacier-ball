@@ -23,7 +23,8 @@ func (s *TarballSuite) SetUpSuite(c *C) {
 }
 
 func (s *TarballSuite) TearDownSuite(c *C) {
-	RemoveFiles(&s.files)
+	RemoveFileList(&s.files)
+	s.filePaths = []string{}
 }
 
 func (s *TarballSuite) TearDownTest(c *C) {
@@ -62,6 +63,5 @@ func (s *TarballSuite) TestUpload(c *C) {
 	err = tarball.Upload()
 	c.Assert(err, IsNil)
 }
-
 
 

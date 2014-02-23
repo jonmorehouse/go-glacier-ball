@@ -13,7 +13,7 @@ import (
 	push channel = read 
 	pop channel = read -- this is really a request pop
 */
-func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation, popChannel chan PopOperation, communicationChannel chan CommunicationOperation) {
+func FileQueueManager(waitGroup * sync.WaitGroup, communicationChannel chan CommunicationOperation) {
 
 	// initialize queue - this should be a pointer
 	queue := list.New()
@@ -25,16 +25,15 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 		select {
 
 		// step 1 - see if we have anything for communication
-		case push := <- pushChannel:
+		case pushOperation := <- push:
 
 			// push into the channel  	
-			queue.PushBack(push.file)
+			queue.PushBack(pushOperation.file)
 
 		// step 2 - queue up any files that need to be queued
-		case pop := <- popChannel:
-			
+		case popOperation := <- pop:
 			if queue.Len() == 0 {//no elements to pass back -- pas an error
-				pop.channel <- PopResponseOperation{err: errors.New("Queue empty")}
+				popOperation.channel <- PopResponseOperation{err: errors.New("Queue empty")}
 			} else {
 				// now lets grab the last element in the list
 				element := queue.Back()
@@ -46,29 +45,21 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 				queue.Remove(element)
 
 				// now lets pipe the file pointer to the file as needed
-				pop.channel <- PopResponseOperation{file: file}
+				popOperation.channel <- PopResponseOperation{file: file}
 			}
 
 		// step 3 - respond to any pop requests as needed
 		case comm := <- communicationChannel:
-
 			if comm.code == ALL_JOBS_SUBMITTED {
-
 				finished = true
-
 			} else if comm.code == ERROR {
-
 				errorReported = true
-
 			} else if comm.code == QUEUE_STATUS {
-
 				// create a response
-				response := CommunicationOperation{code: QUEUE_STATUS, message: queue.Len()}
-
+				response := CommunicationOperation{code: QUEUE_STATUS_RESPONSE, message: queue.Len()}
 				// push the response structure to the channel that is expecting it
 				comm.channel <- response
 			}
-
 		}// end of select statement 
 
 		// this worker is finished
@@ -83,8 +74,6 @@ func FileQueueManager(waitGroup * sync.WaitGroup, pushChannel chan PushOperation
 			break
 		}
 	}
-
 	waitGroup.Done()
 }
-
 

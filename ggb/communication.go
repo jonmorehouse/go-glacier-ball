@@ -3,8 +3,9 @@ package ggb
 const (
 	// establish various status code elements as needed
 	QUEUE_STATUS = 00
-	QUEUE_EMPTY = 01
-	ALL_JOBS_SUBMITTED = 02
+	QUEUE_STATUS_RESPONSE = 01
+	QUEUE_EMPTY = 02
+	ALL_JOBS_SUBMITTED = 03
 	// error codes for various elements as needed
 	ERROR = 10 
 	ERROR_FILE = 11
