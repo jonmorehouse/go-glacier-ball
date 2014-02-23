@@ -13,9 +13,6 @@ var pop chan PopOperation
 var push  chan PushOperation
 var errorComm chan CommunicationOperation
 
-// global variables 
-var tarballCounter int32
-
 func ErrorHandler() {
 	var operation CommunicationOperation
 	// initialize our fatal errors associative arry

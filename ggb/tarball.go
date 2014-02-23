@@ -14,6 +14,7 @@ import (
 
 const contentType = "application/xtar"
 const permissions = s3.PublicReadWrite
+var tarballCounter int32
 
 type Tarball struct {
 	// public components
@@ -29,8 +30,9 @@ type Tarball struct {
 	tw * tar.Writer // tarball writer that holds all of the tarball data as needed 
 }
 
-func NewTarball(prefix string, id int32) (*Tarball, error) {
-	// generate keys and id for this file 
+func NewTarball(prefix string) (*Tarball, error) {
+	// increase the tarball counter as needed for this element
+	id := atomic.AddInt32(&tarballCounter, 1)
 	key := string(prefix) + strconv.Itoa(int(id)) + ".tar.gz" 
 	file, err := os.Create(key)
 	if err != nil {// return the error - our caller will pass to global error handler if necessary
@@ -58,7 +60,7 @@ func (t *Tarball) AddFile(file *File) (*Tarball, error) {
 	// check to see if we have room in the current tarball
 	if file.size > int64(config.Value("MAX_TARBALL_SIZE").(int)) || t.size + file.size > int64(config.Value("MAX_TARBALL_SIZE").(int)) {
 		// create a single tarball upload for this element
-		tarball, err := NewTarball(t.Prefix, atomic.AddInt32(&tarballCounter, 1))
+		tarball, err := NewTarball(t.Prefix)
 		if err != nil {
 			return nil, err
 		} else {// add this larger file into the tarball as needed

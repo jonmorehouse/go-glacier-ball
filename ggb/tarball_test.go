@@ -35,14 +35,13 @@ func (s *TarballSuite) TearDownTest(c *C) {
 }
 
 func (s *TarballSuite) TestNewTarball(c *C) {
-	id := int32(3285)
-	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string), id)
+	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string))
 	s.tarball = tarball
 	c.Assert(tarball, NotNil)
 	c.Assert(err, IsNil)
 	// now lets make sure that we have set the parameters properly
-	c.Assert(tarball.Id, Equals, id)
-	c.Assert(tarball.Key, Equals, config.Value("TARBALL_PREFIX").(string) +  strconv.Itoa(int(id)) + ".tar.gz")
+	c.Assert(tarball.Id, Equals, tarballCounter)
+	c.Assert(tarball.Key, Equals, config.Value("TARBALL_PREFIX").(string) +  strconv.Itoa(int(tarballCounter)) + ".tar.gz")
 	c.Assert(tarball.Full, Equals, false)
 	c.Assert(tarball.file, NotNil)
 	c.Assert(tarball.gz, NotNil)
@@ -51,7 +50,7 @@ func (s *TarballSuite) TestNewTarball(c *C) {
 
 func (s *TarballSuite) TestUpload(c *C) {
 
-	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string), 2854)
+	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string))
 	s.tarball = tarball
 	c.Assert(err, IsNil)
 	c.Assert(tarball, NotNil)
