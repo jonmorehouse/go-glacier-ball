@@ -2,37 +2,49 @@ package ggb
 
 import (
 	"sync"
-	//"sync/atomic"
-	//"github.com/jonmorehouse/go-config/config"
-	"fmt"
+	"github.com/jonmorehouse/go-config/config"
 )
 
 
 func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation) {
 
 	defer waitGroup.Done()
-	//tarball := NewTarball()
+	tarball, err := NewTarball(config.Value("TARBALL_PREFIX").(string))
+	if err != nil {
+		commChannel <- CommunicationOperation{err: err}
+	}
 	finished := false
 	popReciever := make(chan PopResponseOperation, 5)
+	// finalize tarball as needed etc
+	closeTarball := func() {
+		finished = true
+		// try to upload the tarball 
+		if err := tarball.Upload(); err != nil {
+			commChannel <- CommunicationOperation{err: err}
+		}
+	}
 	for {
-
 		select {
 		case _ = <- commChannel:
-			// handle communication here
-
+			closeTarball()
 		default://pop a new file
 			// submit our reciever channel to the pop as needed
 			pop <- PopOperation{channel: popReciever}
 			response := <- popReciever
-
 			if response.err != nil {
-				finished = true
+				closeTarball()
 			} else {
-
-				fmt.Println(response.file)
+				newTarball, err := tarball.AddFile(response.file)
+				if err != nil {
+					finished = true
+					commChannel <- CommunicationOperation{err: err}
+				}
+				// if newTarball was created, the old one was uploaded
+				if newTarball != nil {
+					tarball = newTarball
+				}
 			}
 		}
-
 		if finished {
 			break
 		}
