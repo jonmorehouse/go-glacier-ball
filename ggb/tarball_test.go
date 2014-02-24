@@ -56,7 +56,7 @@ func (s *TarballSuite) TestUpload(c *C) {
 	c.Assert(tarball, NotNil)
 	// add a file to the archive
 	newTarball, err := tarball.AddFile(s.files[0])
-	c.Assert(newTarball, IsNil)
+	c.Assert(newTarball, Equals, tarball)
 	c.Assert(err, IsNil)
 	// now we can upload the archive
 	err = tarball.Upload()

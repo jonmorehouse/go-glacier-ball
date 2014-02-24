@@ -14,6 +14,7 @@ import (
 
 const contentType = "application/xtar"
 const permissions = s3.PublicReadWrite
+const threshold = 0.25
 var tarballCounter int32
 
 type Tarball struct {
@@ -55,27 +56,63 @@ func NewTarball(prefix string) (*Tarball, error) {
 	return &tarball, nil
 }
 
-// Add a file and upload/create a new tarball if necessary 
+/*
+	1.) check to see if new file will put us over 25% threshold
+		yes: create a new tarball with only the new large file
+		no: add file to the current tarball
+	2.) guess which tarball of the two we should upload
+	3.) if we are uploading the old tarball, then go ahead and return the new tarball
+
+*/
 func (t *Tarball) AddFile(file *File) (*Tarball, error) {
-	// check to see if we have room in the current tarball
-	if file.size > int64(config.Value("MAX_TARBALL_SIZE").(int)) || t.size + file.size > int64(config.Value("MAX_TARBALL_SIZE").(int)) {
-		// create a single tarball upload for this element
+	
+	var newTarball * Tarball
+	maxSize := int64(config.Value("MAX_TARBALL_SIZE").(int))
+	maxThresholdedSize := int64(float64(maxSize)*float64(1+threshold))
+	// handle the adding of the file into the tarball
+	// if file pushes current tarball over threshold or is big enough for its own tarball
+	if file.size > maxSize || file.size + t.size > maxThresholdedSize {
+		// create a new tarball
 		tarball, err := NewTarball(t.Prefix)
 		if err != nil {
-			return nil, err
-		} else {// add this larger file into the tarball as needed
-			if err := tarball.addFile(file); err != nil {
-				return nil, err
-			} 
-			if err := tarball.Upload(); err != nil {
-				return nil, err
-			}
-			return tarball, nil
+			return nil, err	
 		}
-	} else {// fits in our current archive. add it like normal
+		if err := tarball.addFile(file); err != nil {
+			return nil, err
+		}
+		newTarball = tarball 
+	} else {//file size is small enough to add to the current tarball
 		if err := t.addFile(file); err != nil {
 			return nil, err
 		}
+	}
+	// handle uploading / returning of the tarball
+	if newTarball == nil {
+		if t.size > maxSize {
+			if err := t.Upload(); err != nil {
+				return nil, err
+			}
+			return NewTarball(t.Prefix)
+		} 
+		return t, nil
+	} else if t.size > maxSize && newTarball.size > maxSize { // upload both and return a new tarball (empty)
+		if err := t.Upload(); err != nil {
+			return nil, err
+		}
+		if err := newTarball.Upload(); err != nil {
+			return nil, err
+		}
+		return NewTarball(t.Prefix)
+	} else if t.size > newTarball.size { // upload t, return newTarball
+		if err := t.Upload(); err != nil {
+			return nil, err
+		}
+		return newTarball, nil
+	} else if newTarball.size > t.size { // upload newTarball return t or nil
+		if err := newTarball.Upload(); err != nil {
+			return nil, err
+		}
+		return t, nil
 	}
 	return nil, nil
 }

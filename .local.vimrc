@@ -1,7 +1,7 @@
 fu! GoCheckSuite()
 
-	"let command = "GOPATH=". g:basePath . " go test -gocheck.f WorkerSuite"
-	let command = "GOPATH=". g:basePath . " go test -gocheck.f TarballSuite"
+	let command = "GOPATH=". g:basePath . " go test -gocheck.f WorkerSuite"
+	"let command = "GOPATH=". g:basePath . " go test -gocheck.f TarballSuite"
 	call CleanShell(command)
 
 endfunction

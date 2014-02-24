@@ -35,14 +35,11 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 				closeTarball()
 			} else {
 				newTarball, err := tarball.AddFile(response.file)
-				if err != nil {
+				if err != nil || newTarball == nil {
 					finished = true
 					commChannel <- CommunicationOperation{err: err}
 				}
-				// if newTarball was created, the old one was uploaded
-				if newTarball != nil {
-					tarball = newTarball
-				}
+				tarball = newTarball
 			}
 		}
 		if finished {

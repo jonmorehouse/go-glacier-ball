@@ -48,6 +48,5 @@ func (s *WorkerSuite) TestWorker(c *C) {
 	s.wg.Wait()
 	// worker should be done processing all of the files
 	// check the bucket for the tarball keys as needed
-
 }
 
