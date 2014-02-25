@@ -1,7 +1,6 @@
 fu! GoCheckSuite()
 
 	let command = "GOPATH=". g:basePath . " go test -gocheck.f WorkerSuite"
-	"let command = "GOPATH=". g:basePath . " go test -gocheck.f TarballSuite"
 	call CleanShell(command)
 
 endfunction
@@ -30,4 +29,5 @@ fu! GoCheckFile()
 endfunction
 
 map <Leader>rr :call GoCheckSuite()<CR>
+"map <Leader>rr :call CleanShell("")
 map <Leader>r :call GoCheckFile()<CR>
