@@ -50,3 +50,4 @@ func (s *WorkerSuite) TestWorker(c *C) {
 	// check the bucket for the tarball keys as needed
 }
 
+

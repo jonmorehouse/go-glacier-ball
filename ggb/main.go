@@ -8,6 +8,7 @@ import (
 	"github.com/jonmorehouse/go-config/config"
 )
 
+
 func GGB() {
 	Bootstrap()
 	// initialize the filepaths that need to be processed
