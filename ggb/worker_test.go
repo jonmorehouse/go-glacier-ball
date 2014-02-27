@@ -16,10 +16,6 @@ type WorkerSuite struct {
 
 var _ = Suite(&WorkerSuite{})
 
-func (s *WorkerSuite) SetUpSuite(c *C) {
-	Bootstrap()
-}
-
 func (s *WorkerSuite) SetUpTest(c *C) {
 	// generate the files 
 	s.comm = make(chan CommunicationOperation)

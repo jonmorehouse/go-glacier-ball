@@ -1,7 +1,6 @@
 package ggb
 
 import (
-
 	"io"
 	"sync"
 )

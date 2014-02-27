@@ -2,31 +2,31 @@ package ggb
 
 import (
 	"fmt"
-	"sync"
 	. "launchpad.net/gocheck"
 )
 
 type UploaderSuite struct {
-	
-	wg sync.WaitGroup
-	files []*File
-	filePaths []string
-	
+	GGBSuite
 }
 
 var _ = Suite(&UploaderSuite{})
 
 func (s *UploaderSuite) SetUpSuite(c *C) {
-	Bootstrap()
+
+	s.Bootstrap()
 }
 
-func (s *UploaderSuite) TestTest(c *C) {
+func (s *UploaderSuite) TearDownSuite(c *C) {
 
-	fmt.Println("ASDFASDF")
-
+	s.Breakdown()
 
 }
 
+func (s *UploaderSuite) TestUploader(c *C) {
+
+	// 
+	fmt.Println("ASDF")
+}
 
 
 

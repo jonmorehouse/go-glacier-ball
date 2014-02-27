@@ -15,10 +15,6 @@ type FileQueueSuite struct {
 // bootstrap the suite into the current environment
 var _ = Suite(&FileQueueSuite{})
 
-func (s *FileQueueSuite) SetUpSuite(c *C) {
-	Bootstrap()
-}
-
 // now lets test the basic functionality of the different elements as needed
 func (s * FileQueueSuite) SetUpTest(c *C) {
 	s.files = CreateFileList(5)

@@ -3,11 +3,9 @@ package ggb
 import (
 	. "launchpad.net/gocheck"
 	"bytes"
-	//"fmt"
 )
 
 type InputSuite struct {
-	
 	GGBSuite	
 }
 
@@ -58,8 +56,5 @@ func (s *InputSuite) TestNullInput(c *C) {
 	c.Assert(err, NotNil)
 	c.Assert(inputType, Equals, INPUT_TYPE_NULL)
 }
-
-
-
 
 

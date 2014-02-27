@@ -15,10 +15,6 @@ type ProcessorSuite struct {
 
 var _ = Suite(&ProcessorSuite{})
 
-func (s *ProcessorSuite) SetUpSuite(c *C) {
-	Bootstrap()
-}
-
 func (s *ProcessorSuite) SetUpTest(c *C) {
 
 	s.comm = make(chan CommunicationOperation)

@@ -19,7 +19,6 @@ type GGBSuite struct {
 
 func (s *GGBSuite) Bootstrap() {
 
-	Bootstrap()//call master bootstrap method
 	if s.numberFiles == 0 {
 		s.numberFiles = 5
 	} else if s.numberFiles < 0 {

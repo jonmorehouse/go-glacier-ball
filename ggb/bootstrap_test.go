@@ -12,10 +12,6 @@ func TestBootstrap(t * testing.T) {
 	TestingT(t)
 }
 
-func (s *BootstrapSuite) SetUpSuite(c *C) {
-	Bootstrap()
-}
-
 func (s *BootstrapSuite) TestErrorHandler(c *C) {
 	// create a nonsimple error operation
 	errorOperation := CommunicationOperation{}

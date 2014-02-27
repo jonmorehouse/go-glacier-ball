@@ -26,7 +26,7 @@ func ErrorHandler() {
 	}
 }
 
-func Bootstrap() {
+func init() {
 	// setup configuration
 	envVars := []string{
 		"BUCKET_NAME",

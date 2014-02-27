@@ -15,7 +15,6 @@ type TarballSuite struct {
 var _ = Suite(&TarballSuite{})
 
 func (s *TarballSuite) SetUpSuite(c *C) {
-	Bootstrap()
 	s.files = CreateFileList(50)
 	for i := range s.files {
 		s.filePaths = append(s.filePaths, s.files[i].path)

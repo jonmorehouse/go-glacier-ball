@@ -1,6 +1,6 @@
 fu! GoCheckSuite()
 
-	let command = "GOPATH=". g:basePath . " go test -gocheck.f InputSuite"
+	let command = "GOPATH=". g:basePath . " go test -gocheck.f UploaderSuite"
 	call CleanShell(command)
 
 endfunction
