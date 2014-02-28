@@ -109,3 +109,27 @@ func ReaderFromString(input string) (*bytes.Reader, error) {
 	return bytes.NewReader(buffer.Bytes()), nil
 }
 
+type QueueCallback func(* sync.WaitGroup, * File) 
+func ProcessFileQueue(callback QueueCallback) {
+
+	var wg sync.WaitGroup
+	popRequest := PopOperation{channel: make(chan PopResponseOperation)}
+
+	// this will grab all files from the file queue and call the callback as needed
+	for {
+		pop <- popRequest
+		popResponse := <- popRequest.channel
+
+		if popResponse.err != nil {
+			break
+		} else {
+			wg.Add(1)
+			go callback(&wg, popResponse.file)
+		}
+	} 
+	wg.Wait()
+
+}
+
+
+

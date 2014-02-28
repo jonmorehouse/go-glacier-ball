@@ -15,6 +15,8 @@ import (
 */
 func FileQueueManager(waitGroup * sync.WaitGroup, communicationChannel chan CommunicationOperation) {
 
+	defer waitGroup.Done()
+
 	// initialize queue - this should be a pointer
 	queue := list.New()
 	finished := false
@@ -67,6 +69,5 @@ func FileQueueManager(waitGroup * sync.WaitGroup, communicationChannel chan Comm
 			break
 		}
 	}
-	waitGroup.Done()
 }
 

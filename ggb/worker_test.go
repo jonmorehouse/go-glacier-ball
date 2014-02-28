@@ -1,10 +1,11 @@
 package ggb
 
 import (
-	"sync"
-	. "launchpad.net/gocheck"
+	//"sync"
+	//. "launchpad.net/gocheck"
 )
 
+/*
 type WorkerSuite struct {
 
 	comm chan CommunicationOperation
@@ -45,5 +46,6 @@ func (s *WorkerSuite) TestWorker(c *C) {
 	// worker should be done processing all of the files
 	// check the bucket for the tarball keys as needed
 }
+*/
 
 
