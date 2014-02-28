@@ -5,7 +5,6 @@ import (
 	"github.com/jonmorehouse/go-config/config"
 )
 
-
 func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation) {
 
 	defer waitGroup.Done()
@@ -48,4 +47,14 @@ func Worker(waitGroup * sync.WaitGroup, commChannel chan CommunicationOperation)
 	}
 }
 
+func WorkerManager(wg * sync.WaitGroup) {
+
+	defer wg.Done()
+
+	//var lwg sync.WaitGroup
+	// check the number / size of file and create accordingly
+
+
+
+}
 

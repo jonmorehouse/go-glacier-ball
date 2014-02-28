@@ -17,7 +17,6 @@ func ProcessorManager(cwg * sync.WaitGroup, rawInput io.Reader) {
 	// start process worker
 	wg.Add(1)
 	go Processor(&wg, channel)
-
 	for {
 		line, err := reader.ReadString('\n')
 		if err != nil {
@@ -30,7 +29,6 @@ func ProcessorManager(cwg * sync.WaitGroup, rawInput io.Reader) {
 	close(channel)
 	// now wait until all files are closed and submitted (in the processor)
 	wg.Wait()
-
 }
 
 func Processor(cwg * sync.WaitGroup, input chan string) {
