@@ -6,6 +6,12 @@ const (
 	QUEUE_STATUS_RESPONSE = 01
 	QUEUE_EMPTY = 02
 	ALL_JOBS_SUBMITTED = 03
+	QUEUE_CURRENT_FILES = 04
+	QUEUE_TOTAL_FILES = 05
+	QUEUE_TOTAL_BYTES = 06
+	QUEUE_EXIT = 07
+	QUEUE_PUSH_COMPLETED = 8
+
 	// error codes for various elements as needed
 	ERROR = 10 
 	ERROR_FILE = 11
@@ -46,5 +52,6 @@ type PushOperation struct {
 	// assumes a legitimate file being passed in as needed
 	// file pointer that needs to be passed in 	
 	file * File
+	channel chan CommunicationOperation
 }
 

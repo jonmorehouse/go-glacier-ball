@@ -34,6 +34,7 @@ func (s *GGBSuite) Breakdown() {
 
 	RemoveFileList(&s.files)
 	s.filePaths = []string{}
+	s.comm <- CommunicationOperation{code: QUEUE_EXIT}
 }
 
 
@@ -128,7 +129,6 @@ func ProcessFileQueue(callback QueueCallback) {
 		}
 	} 
 	wg.Wait()
-
 }
 
 
